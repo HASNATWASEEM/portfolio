@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # --- MONGODB SETUP ---
 # Apni connection string yahan paste karein (Username aur Password ke sath)
-mongodb+srv://hasnatwaseem10fw_db_user:<Hasnat123>@cluster0.9vrdboa.mongodb.net/?appName=Cluster0
+mongodb+srv://hasnatwaseem10fw_db_user:<HASNAT123>@cluster0.9vrdboa.mongodb.net/?appName=Cluster0
 client = MongoClient(MONGO_URI)
 db = client['portfolio_db']
 messages_col = db['messages']
