@@ -4,15 +4,7 @@ import os
 
 app = Flask(__name__)
 
-MESSAGE_FILE = "messages.json"
-VISITOR_FILE = "visitors.json"
-
-# Create files if not exist
-for file in [MESSAGE_FILE, VISITOR_FILE]:
-    if not os.path.exists(file):
-        with open(file, "w") as f:
-            json.dump([], f)
-
+# Projects data
 projects = [
     {
         "title": "Landing Page",
@@ -36,64 +28,23 @@ projects = [
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-
-    # visitor counter
-    with open(VISITOR_FILE, "r") as f:
-        visitors = json.load(f)
-
-    visitors.append({"visit": "1"})
-
-    with open(VISITOR_FILE, "w") as f:
-        json.dump(visitors, f)
-
-    visitor_count = len(visitors)
+    # Abhi ke liye visitor count static rakha hai kyunki Vercel file save nahi karne deta
+    visitor_count = 100 
 
     if request.method == "POST":
-
+        # Form submission abhi sirf console par dikhayega, save nahi karega
         name = request.form.get("name")
-        email = request.form.get("email")
-        message = request.form.get("message")
-
-        if name and email and message:
-
-            with open(MESSAGE_FILE, "r") as f:
-                data = json.load(f)
-
-            data.append({
-                "name": name,
-                "email": email,
-                "message": message
-            })
-
-            with open(MESSAGE_FILE, "w") as f:
-                json.dump(data, f, indent=4)
-
+        print(f"New Message from {name}")
         return redirect(url_for("index"))
 
     return render_template("index.html",
                            projects=projects,
                            visitors=visitor_count)
 
-
 @app.route("/admin")
 def admin():
-
-    with open(MESSAGE_FILE, "r") as f:
-        messages = json.load(f)
-
-    return render_template("admin.html", messages=messages)
-
-
-@app.route("/api/messages")
-def api_messages():
-
-    with open(MESSAGE_FILE, "r") as f:
-        data = json.load(f)
-        
-app = app 
-
-    return jsonify(data)
-
+    # Khali list bhej rahe hain kyunki JSON file Vercel par nahi chalegi
+    return render_template("admin.html", messages=[])
 
 if __name__ == "__main__":
     app.run(debug=True)
