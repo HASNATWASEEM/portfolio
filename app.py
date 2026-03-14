@@ -89,6 +89,8 @@ def api_messages():
 
     with open(MESSAGE_FILE, "r") as f:
         data = json.load(f)
+        
+app = app 
 
     return jsonify(data)
 
