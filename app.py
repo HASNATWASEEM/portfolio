@@ -5,18 +5,45 @@ import os
 app = Flask(__name__)
 
 # --- MONGODB CONNECTION ---
-# Yahan apni string dalein aur <db_password> ko apne naye password se replace karein
+# Replace <db_password> with your actual password if needed
 MONGO_URI = "mongodb+srv://hasnatwaseem10fw_db_user:HASNAT123@cluster0.9vrdboa.mongodb.net/portfolio_db?retryWrites=true&w=majority"
 
 client = MongoClient(MONGO_URI)
 db = client['portfolio_db']
 messages_col = db['messages']
 
+# --- PROJECTS LIST (multi-image support) ---
 projects = [
-    {"title": "Landing Page", "category": "frontend", "desc": "Responsive HTML/CSS landing page", "img": "/static/images/project1.jpg"},
-    {"title": "Flask Task Manager", "category": "backend", "desc": "Task manager built with Flask", "img": "/static/images/project2.jpg"},
-    {"title": "ML Predictor", "category": "ml", "desc": "Machine learning model using Pandas & NumPy", "img": "/static/images/project3.jpg"}
+    {
+        "title": "DIABETES PREDICTION SYSTEM",
+        "category": "Frontend",
+        "desc": "Machine learning model using Pandas & NumPy",
+        "images": [
+            "/static/images/project1-1.jpg",
+            "/static/images/project1-2.jpg",
+            "/static/images/project1-3.jpg"
+        ]
+    },
+    {
+        "title": "DUBBING TOOL",
+        "category": "Backend",
+        "desc": "DUBBING TOOL built with Flask",
+        "images": [
+            "/static/images/project2-1.jpg",
+            "/static/images/project2-2.jpg"
+        ]
+    },
+    {
+        "title": "PORTFOLIO PROJECT",
+        "category": "ML",
+        "desc": "PORTFOLIO WITH HTML/CSS",
+        "images": [
+            "/static/images/project3-1.jpg"
+        ]
+    }
 ]
+
+# --- ROUTES ---
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -26,7 +53,7 @@ def index():
         message = request.form.get("message")
 
         if name and email and message:
-            # Data Cloud mein save ho raha hai
+            # Save message to MongoDB
             messages_col.insert_one({
                 "name": name,
                 "email": email,
@@ -38,9 +65,10 @@ def index():
 
 @app.route("/admin")
 def admin():
-    # Saare messages cloud se nikaal kar admin page par bhej rahe hain
+    # Fetch all messages from MongoDB for admin view
     all_messages = list(messages_col.find({}, {'_id': 0}))
     return render_template("admin.html", messages=all_messages)
 
+# --- RUN SERVER ---
 if __name__ == "__main__":
     app.run(debug=True)
